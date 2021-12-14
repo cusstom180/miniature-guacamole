@@ -1,5 +1,6 @@
+/*global google*/
 import React from 'react'
-import { Autocomplete, GoogleMap, useLoadScript } from '@react-google-maps/api';
+import { Autocomplete, GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 
 const containerStyle = {
     width: '100vw',
@@ -13,13 +14,38 @@ const center = {
 const libraries = ["places"];
 
 export default function Map() {
-    const { isLoaded, loadError } = useLoadScript({
+    const { isLoaded, loadError } = useJsApiLoader({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries,
     });
 
+    const mapRef = React.useRef();
+
     function onLoad(autocomplete) {
-        console.log('autocomplete: ', autocomplete)
+        //console.log('autocomplete: ', autocomplete);
+
+        let request = {
+            query: "Museum of Contemporary Art Australia",
+            fields: ["name", "geometry"]
+        };
+
+        console.log(window);
+
+        let service = google.maps.places.PlacesService(mapRef);
+
+        service.findPlaceFromQuery(request, (results, status) => {
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+                for (var i = 0; i < results.length; i++) {
+                    //coords.push(results[i]);
+                }
+
+                this.setState({
+                    center: results[0].geometry.location,
+                    //coordsResult: coords
+                });
+            }
+        });
+
     }
 
     if (loadError) return "Error";
