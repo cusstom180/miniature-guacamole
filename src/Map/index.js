@@ -1,5 +1,5 @@
 /*global google*/
-import React from 'react'
+import React, { useState } from 'react'
 import { Autocomplete, GoogleMap } from '@react-google-maps/api';
 
 const containerStyle = {
@@ -25,6 +25,8 @@ export default function Map() {
         mapRef.current = map;
     }, []);
 
+    const { inputValue, setInputValue } = useState([]);
+
     function onLoad(autocomplete) {
         //console.log('autocomplete: ', autocomplete);
 
@@ -48,8 +50,9 @@ export default function Map() {
         //         });
         //     }
         // });
+    }
 
-
+    function handleSelect() {
 
     }
 
@@ -62,6 +65,7 @@ export default function Map() {
         >
             <Autocomplete
                 onLoad={onLoad}
+                onPlaceChanged={handleSelect}
             >
                 <input
                     type="text"
@@ -88,3 +92,4 @@ export default function Map() {
         </GoogleMap>
     )
 }
+
