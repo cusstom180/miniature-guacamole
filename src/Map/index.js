@@ -1,6 +1,6 @@
 /*global google*/
 import React from 'react'
-import { Autocomplete, GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import { Autocomplete, GoogleMap } from '@react-google-maps/api';
 
 const containerStyle = {
     width: '100vw',
@@ -11,15 +11,19 @@ const center = {
     lat: 42.716987154458685,
     lng: -83.12513891049745
 };
-const libraries = ["places"];
+
+function getDamGoogle({ map, request }) {
+    let service = google.maps.places.PlacesService(map);
+    console.log(service);
+    console.log(request);
+}
 
 export default function Map() {
-    const { isLoaded, loadError } = useJsApiLoader({
-        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-        libraries,
-    });
 
     const mapRef = React.useRef();
+    const onMapLoad = React.useCallback((map) => {
+        mapRef.current = map;
+    }, []);
 
     function onLoad(autocomplete) {
         //console.log('autocomplete: ', autocomplete);
@@ -28,35 +32,33 @@ export default function Map() {
             query: "Museum of Contemporary Art Australia",
             fields: ["name", "geometry"]
         };
+        getDamGoogle({ mapRef, request });
 
-        console.log(window);
+        // let service = google.maps.places.PlacesService(mapRef);
+        // console.log(service);
+        // service.findPlaceFromQuery(request, (results, status) => {
+        //     if (status === google.maps.places.PlacesServiceStatus.OK) {
+        //         for (var i = 0; i < results.length; i++) {
+        //             //coords.push(results[i]);
+        //         }
 
-        let service = google.maps.places.PlacesService(mapRef);
+        //         this.setState({
+        //             center: results[0].geometry.location,
+        //             //coordsResult: coords
+        //         });
+        //     }
+        // });
 
-        service.findPlaceFromQuery(request, (results, status) => {
-            if (status === google.maps.places.PlacesServiceStatus.OK) {
-                for (var i = 0; i < results.length; i++) {
-                    //coords.push(results[i]);
-                }
 
-                this.setState({
-                    center: results[0].geometry.location,
-                    //coordsResult: coords
-                });
-            }
-        });
 
     }
-
-    if (loadError) return "Error";
-    if (!isLoaded) return "Loading...";
 
     return (
         <GoogleMap
             mapContainerStyle={containerStyle}
             center={center}
             zoom={10}
-            onLoad={onLoad}
+            onLoad={onMapLoad}
         >
             <Autocomplete
                 onLoad={onLoad}
