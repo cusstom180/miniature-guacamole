@@ -20,10 +20,10 @@ const options = {
     zoomControl: true,
 };
 
-function getDamGoogle({ map, request }) {
+const getDamGoogle = ({ map, request }) => {
     let service = google.maps.places.PlacesService(map);
-    console.log(service);
-    console.log(request);
+    console.log("service:" + service);
+    console.log("request:" + request);
 }
 
 export default function Map() {
@@ -51,9 +51,15 @@ export default function Map() {
         ]);
     }, []);
 
+    const getDamGoogle2 = (request) => {
+        let service = google.maps.places.PlacesService(mapRef);
+        console.log("service:" + service);
+        console.log("request:" + request);
+    }
+
     return (
         <div>
-            <PlacesAutocomplete></PlacesAutocomplete>
+            <PlacesAutocomplete map={mapRef} getGooglePlaces={getDamGoogle} ></PlacesAutocomplete>
             <GoogleMap
                 mapContainerStyle={containerStyle}
                 center={center}
