@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocomplete";
 import {
     Combobox,
@@ -8,6 +8,11 @@ import {
     ComboboxOption,
 } from "@reach/combobox";
 import "@reach/combobox/styles.css";
+import axios from "axios";
+
+const baseURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/";
+
+
 
 const getDamGoogle = ({ map, request }) => {
     console.log(window);
@@ -28,6 +33,11 @@ export default function PlacesAutocomplete(props) {
     const handleInput = (e) => {
         setValue(e.target.value);
     };
+    const [latLong, setLatLong] = useState({
+        lat: "",
+        lng: ""
+    });
+    const latLngPlace
 
     const handleSelect = (val) => {
         setValue(val, false);
@@ -46,8 +56,17 @@ export default function PlacesAutocomplete(props) {
                     lng: latLng.lng,
                 });
 
-                getDamGoogle(props.map, latLng);
+                setLatLong({
+                    lat: latLng.lat,
+                    lnt: latLng.lnt
+                });
+
                 // var results = props.getGooglePlaces(latLng);
+                let service = props.google;
+                ///.nearbySearch(latLng);
+                //console.log("service: ", service);
+                //console.log(service);
+                //console.log(props.map);
             })
 
             .catch((error) => {
