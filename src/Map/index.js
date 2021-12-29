@@ -1,8 +1,10 @@
-/*global google*/
+
 import React, { useState } from 'react';
-import { GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
+import { GoogleMap, Marker, InfoWindow, MapContext } from '@react-google-maps/api';
 import "@reach/combobox/styles.css";
 import PlacesAutocomplete from './PlacesAutocomplete';
+
+
 
 const containerStyle = {
     width: '100vw',
@@ -20,19 +22,28 @@ const options = {
     zoomControl: true,
 };
 
-const getDamGoogle = ({ map, request }) => {
-    let service = google.maps.places.PlacesService(map);
-    console.log("service:" + service);
-    console.log("request:" + request);
-}
+// const getDamGoogle = ({ map, request }) => {
+//     let service = google.maps.places.PlacesService(map);
+//     console.log("service:" + service);
+//     console.log("request:" + request);
+// }
 
 export default function Map() {
 
+
+
+    const googleRef = React.useRef();
     const mapRef = React.useRef();
     const onMapLoad = React.useCallback((map) => {
+
         mapRef.current = map;
+        console.log("1", mapRef.current);
     }, []);
 
+
+    const google = window.google.maps.places.PlacesService(mapRef.current);
+
+    console.log(mapRef.current);
     const panTo = React.useCallback(({ lat, lng }) => {
         mapRef.current.panTo({ lat, lng });
         mapRef.current.setZoom(14);
@@ -51,16 +62,16 @@ export default function Map() {
         ]);
     }, []);
 
-    const getDamGoogle2 = (request) => {
-        let service = google.maps.places.PlacesService(mapRef);
-        console.log("service:" + service);
-        console.log("request:" + request);
-    }
-
     return (
         <div>
-            <PlacesAutocomplete map={mapRef} getGooglePlaces={getDamGoogle} ></PlacesAutocomplete>
+            <PlacesAutocomplete
+                map={mapRef}
+                google={google}
+                latLngPlace={latLngPlace}
+            >
+            </PlacesAutocomplete>
             <GoogleMap
+                id="theMap"
                 mapContainerStyle={containerStyle}
                 center={center}
                 zoom={10}
